@@ -75,6 +75,7 @@ CONFIGS=(
 
 DIR_CONFIGS=(
     "nvim:$HOME/.config/nvim"
+    "awesome:$HOME/.config/awesome"
 )
 
 # ---- Dependencies by package manager -----------------------------------------

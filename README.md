@@ -12,6 +12,7 @@ Personal configuration files for Arch Linux.
 | `alacritty.toml` | `~/.config/alacritty/alacritty.toml` | Alacritty terminal with JetBrainsMono Nerd Font, 80% opacity |
 | `gitconfig.template` | `~/.gitconfig` | Git defaults (append to existing config) |
 | `nvim/` | `~/.config/nvim/` | Neovim config for C/C++ kernel development (clangd, treesitter, telescope, cscope) |
+| `awesome/` | `~/.config/awesome/` | AwesomeWM config: modular rc.lua, keybindings, widgets, Arc Dark theme |
 
 ## Install
 
@@ -30,6 +31,14 @@ The installer will:
 - Symlink configs to their target locations (backs up existing files)
 - Install dependencies (bat, eza, fd, zoxide, neovim, tmux, fzf)
 - Install JetBrainsMono Nerd Font
+
+### Touchpad config (AwesomeWM)
+
+After installing, symlink the touchpad config:
+
+```bash
+sudo ln -s ~/.config/awesome/90-touchpad.conf /etc/X11/xorg.conf.d/90-touchpad.conf
+```
 
 ## Dependencies
 
