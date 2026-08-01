@@ -9,8 +9,8 @@ M.modkey = "Mod4"
 -- Font
 M.font = "WenQuanYi Micro Hei 12"
 
--- Theme
-M.theme = "awesome-arc-theme/themes/arc-dark/theme.lua"
+-- Theme path (relative to this config dir; inside the awesome-arc-theme submodule)
+M.theme_path = "awesome-arc-theme/themes/arc-dark/theme.lua"
 
 -- Textclock
 M.textclock = {

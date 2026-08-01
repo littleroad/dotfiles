@@ -44,7 +44,7 @@ end
 -- }}}
 
 -- {{{ Theme and variables
-beautiful.init(gears.filesystem.get_dir("config") .. config.theme)
+beautiful.init(gears.filesystem.get_dir("config") .. config.theme_path)
 beautiful.font = config.font
 -- }}}
 
