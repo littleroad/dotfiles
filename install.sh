@@ -75,8 +75,8 @@ LINK_CONFIGS=(
     "awesome:$HOME/.config/awesome"
 )
 
-# ---- Dependencies by package manager -----------------------------------------
-DEPS_PACMAN=(
+# ---- Dependencies (neutral names; per-manager mapping below) -----------------
+DEPS=(
     "bat"
     "eza"
     "fd"
@@ -86,18 +86,55 @@ DEPS_PACMAN=(
     "fzf"
 )
 
-DEPS_APT=(
-    "bat"
-    "eza"
-    "fd-find"
-    "zoxide"
-    "neovim"
-    "tmux"
-    "fzf"
-)
+# ---- Package manager adapters ------------------------------------------------
+# One seam, two adapters. Callers use neutral names; package/command names are
+# resolved per manager here.
+case "$PKG_MANAGER" in
+    pacman)
+        PKG_INSTALL=(sudo pacman -S --noconfirm)
+        pkg_package_name() {
+            case "$1" in
+                nerd-font) echo "ttf-jetbrains-mono-nerd" ;;
+                *) echo "$1" ;;
+            esac
+        }
+        pkg_command_name() {
+            case "$1" in
+                neovim) echo nvim ;;
+                *) echo "$1" ;;
+            esac
+        }
+        ;;
+    apt)
+        PKG_INSTALL=(sudo apt install -y)
+        pkg_package_name() {
+            case "$1" in
+                fd) echo fd-find ;;
+                nerd-font) echo "" ;;
+                *) echo "$1" ;;
+            esac
+        }
+        pkg_command_name() {
+            case "$1" in
+                fd) echo fdfind ;;
+                neovim) echo nvim ;;
+                *) echo "$1" ;;
+            esac
+        }
+        ;;
+esac
 
-FONT_PKG_PACMAN="ttf-jetbrains-mono-nerd"
-FONT_PKG_APT=""  # No standard apt package; would need manual install
+pkg_available() {
+    command -v "$(pkg_command_name "$1")" &>/dev/null
+}
+
+pkg_install() {
+    "${PKG_INSTALL[@]}" "$(pkg_package_name "$1")" 2>/dev/null
+}
+
+pkg_font_pkg() {
+    pkg_package_name nerd-font
+}
 
 # ---- Functions ---------------------------------------------------------------
 ensure_dir() {
@@ -159,33 +196,16 @@ link_config() {
 }
 
 install_deps() {
-    local deps=()
-    if [[ "$PKG_MANAGER" == "pacman" ]]; then
-        deps=("${DEPS_PACMAN[@]}")
-    else
-        deps=("${DEPS_APT[@]}")
-    fi
-
     info "Checking dependencies..."
-    for pkg in "${deps[@]}"; do
-        # Check if command exists (handle package -> command name mappings)
-        local cmd="$pkg"
-        [[ "$pkg" == "fd-find" ]] && cmd="fdfind"
-        [[ "$pkg" == "fd" ]] && cmd="fd"
-        [[ "$pkg" == "neovim" ]] && cmd="nvim"
-
-        if command -v "$cmd" &>/dev/null || (command -v fdfind &>/dev/null && [[ "$pkg" == "fd" ]]); then
+    for pkg in "${DEPS[@]}"; do
+        if pkg_available "$pkg"; then
             ok "$pkg (installed)"
         else
             if [[ "$MODE" == "apply" ]]; then
-                install "$pkg"
-                if [[ "$PKG_MANAGER" == "pacman" ]]; then
-                    sudo pacman -S --noconfirm "$pkg" 2>/dev/null || warn "Failed to install $pkg"
-                else
-                    sudo apt install -y "$pkg" 2>/dev/null || warn "Failed to install $pkg"
-                fi
+                install "$(pkg_package_name "$pkg")"
+                pkg_install "$pkg" || warn "Failed to install $pkg"
             else
-                install "$pkg (would install)"
+                install "$(pkg_package_name "$pkg") (would install)"
             fi
         fi
     done
@@ -193,11 +213,7 @@ install_deps() {
 
 install_font() {
     local font_pkg
-    if [[ "$PKG_MANAGER" == "pacman" ]]; then
-        font_pkg="$FONT_PKG_PACMAN"
-    else
-        font_pkg="$FONT_PKG_APT"
-    fi
+    font_pkg="$(pkg_font_pkg)"
 
     if [[ -z "$font_pkg" ]]; then
         warn "No font package available for $PKG_MANAGER"
@@ -206,17 +222,13 @@ install_font() {
     fi
 
     local fonts
-    fonts="$(fc-list 2>/dev/null)"
+    fonts="$(fc-list 2>/dev/null || true)"
     if echo "$fonts" | grep -qi "JetBrainsMono.*Nerd Font"; then
         ok "JetBrainsMono Nerd Font (installed)"
     else
         if [[ "$MODE" == "apply" ]]; then
             install "$font_pkg"
-            if [[ "$PKG_MANAGER" == "pacman" ]]; then
-                sudo pacman -S --noconfirm "$font_pkg" 2>/dev/null || warn "Failed to install font"
-            else
-                sudo apt install -y "$font_pkg" 2>/dev/null || warn "Failed to install font"
-            fi
+            pkg_install nerd-font || warn "Failed to install font"
         else
             install "$font_pkg (would install)"
         fi
