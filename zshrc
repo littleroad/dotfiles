@@ -21,6 +21,14 @@ setopt INTERACTIVE_COMMENTS # allow # comments in interactive shell
 setopt MULTIOS              # enable redirect to multiple streams
 setopt LONG_LIST_JOBS       # show long format job notifications
 setopt PUSHD_MINUS          # enable cd -2 style stack navigation
+setopt PUSHD_TO_HOME        # pushd with no args = pushd $HOME
+setopt HIST_IGNORE_ALL_DUPS # delete old duplicate history entries
+setopt HIST_REDUCE_BLANKS   # trim whitespace before recording
+setopt AUTO_LIST            # list completions on ambiguous match
+setopt AUTO_PARAM_SLASH     # add trailing slash to completed dirs
+setopt NO_BEEP              # no beep on error
+setopt NUMERIC_GLOB_SORT    # sort glob matches numerically
+setopt EXTENDED_GLOB        # needed for (#q...) glob qualifiers
 unsetopt FLOWCONTROL        # disable Ctrl+S/Ctrl+Q freeze
 
 # ---- Word Characters --------------------------------------------------------
@@ -31,6 +39,8 @@ WORDCHARS=''
 HISTFILE=~/.zsh_history
 HISTSIZE=100000
 SAVEHIST=100000
+HIST_STAMPS="yyyy-mm-dd"       # history command output timestamp format
+COMPLETION_WAITING_DOTS="true" # show dots while completion is running
 
 # ---- Completion ------------------------------------------------------------
 # Cache completion to speed up startup
@@ -38,8 +48,11 @@ zstyle ':completion:*' use-cache on
 zstyle ':completion:*' cache-path "$HOME/.zsh_cache"
 zstyle ':completion:*' menu select
 zstyle ':completion:*' matcher-list 'm:{a-zA-Z_-}={A-Za-z-_}' 'r:|[._-]=* r:|=*' 'l:|=* r:|=*'
+# Default LS_COLORS fallback
+(( ${+LS_COLORS} )) || typeset -g LS_COLORS='di=1;34:ln=36:pi=40;33:so=1;35:bd=40;33;01:cd=40;33;01:or=1;31:mi=1;31:ex=1;32:*.tar=1;31:*.tgz=1;31:*.zip=1;31:*.gz=1;31:*.bz2=1;31:*.xz=1;31:*.deb=1;31:*.rpm=1;31:*.jar=1;31:*.rar=1;31:*.7z=1;31:*.jpg=1;35:*.jpeg=1;35:*.png=1;35:*.gif=1;35:*.bmp=1;35:*.svg=1;35:*.mov=1;35:*.mp4=1;35:*.mkv=1;35:*.webm=1;35:*.avi=1;35:*.mp3=1;36:*.wav=1;36:*.flac=1;36:*.ogg=1;36:*.aac=1;36:*~=90:*#=90:*.bak=90:*.old=90:*.orig=90:*.swp=90:*.tmp=90'
 zstyle ':completion:*' list-colors "${(s.:.)LS_COLORS}"
 zstyle ':completion:*:*:kill:*:processes' list-colors '=(#b) #([0-9]#)*=0=01;31'
+zstyle ':completion:*:*:*:*:processes' command "ps -u $USER -o pid,user,comm -w -w"
 zstyle ':completion:*' special-dirs true  # complete . and ..
 
 # Create cache dir if needed
@@ -67,6 +80,20 @@ bindkey '^[[1;5C' forward-word                    # Ctrl+Right = forward word
 bindkey '^[[1;5D' backward-word                   # Ctrl+Left = backward word
 bindkey '^[[3;5~' kill-word                       # Ctrl+Delete = forward delete
 bindkey '\C-x\C-e' edit-command-line              # Ctrl+X Ctrl+E = edit in $EDITOR
+bindkey '^[[Z' reverse-menu-complete              # Shift+Tab = previous completion
+
+# Ctrl+Z on empty line resumes last suspended job
+fancy-ctrl-z() {
+  if [[ $#BUFFER -eq 0 ]]; then
+    BUFFER="fg"
+    zle accept-line
+  else
+    zle push-input
+    zle clear-screen
+  fi
+}
+zle -N fancy-ctrl-z
+bindkey '^Z' fancy-ctrl-z
 
 # ---- Colors & Prompt -------------------------------------------------------
 autoload -Uz colors && colors
@@ -90,6 +117,20 @@ add-zsh-hook precmd _zsh_precmd
 setopt PROMPT_SUBST
 PROMPT='%B%(?:%F{green}➜%f :%F{red}➜%f )%F{cyan}%c%f ${vcs_info_msg_0_}%b'
 
+# ---- Terminal Title ------------------------------------------------------
+_zsh_termsupport_precmd() {
+  [[ $TERM == *(xterm|screen|tmux|alacritty|kitty)* ]] || return
+  local pwd="${PWD/#$HOME/~}"
+  print -Pn "\e]0;%n@%m: $pwd\a"
+}
+_zsh_termsupport_preexec() {
+  [[ $TERM == *(xterm|screen|tmux|alacritty|kitty)* ]] || return
+  local -a cmd; cmd=(${(z)1})
+  print -Pn "\e]0;%n@%m: ${cmd[1]:t}\a"
+}
+add-zsh-hook precmd _zsh_termsupport_precmd
+add-zsh-hook preexec _zsh_termsupport_preexec
+
 # ---- PATH ------------------------------------------------------------------
 typeset -U path  # unique paths only
 path=(
@@ -102,6 +143,7 @@ path=(
 # ---- Environment -----------------------------------------------------------
 export EDITOR=nvim
 export LIBVIRT_DEFAULT_URI='qemu:///system'
+[[ -z "$GREP_COLOR" && -z "$GREP_COLORS" ]] && export GREP_COLOR='1;32'  # grep match color
 
 # ---- Aliases ---------------------------------------------------------------
 alias vi=nvim
@@ -121,7 +163,7 @@ alias ping='ping -O'
 alias df='df --exclude-type=tmpfs'
 alias iostat='iostat -Nh'
 
-# directory navigation (oh-my-zsh defaults)
+# directory navigation
 alias -g ...='../..'
 alias -g ....='../../..'
 alias -g .....='../../../..'
@@ -138,6 +180,7 @@ alias 8='cd -8'
 alias 9='cd -9'
 alias md='mkdir -p'
 alias rd=rmdir
+alias d='dirs -v | head -10'   # show directory stack
 
 # tmux
 alias tl='tmux list-sessions'
@@ -145,7 +188,7 @@ alias ts='tmux new-session -s'
 alias ta='tmux attach -t'
 alias td='tmux detach -s'
 
-# git (replaces oh-my-zsh git plugin)
+# git aliases
 alias g='git'
 alias gs='git status -sb'
 alias ga='git add'
@@ -215,6 +258,58 @@ alias gclean='git clean -id'
 alias gpristine='git reset --hard && git clean -dfx'
 alias gwip='git commit -a -m "WIP"'
 alias gunwip='git log -n 1 | grep -q -c "WIP" && git reset HEAD~1'
+
+# ---- Functions ------------------------------------------------------------
+
+# take: mkdir + cd
+take() {
+  mkdir -p -- "$1"
+  cd -- "$1"
+}
+
+# Default git branch detection
+git_main_branch() {
+  command git rev-parse --git-dir &>/dev/null || return 1
+  local branch
+  # 1. current branch if it's main/master
+  branch="$(command git symbolic-ref --short HEAD 2>/dev/null)"
+  if [[ -n $branch && ( $branch == main || $branch == master ) ]]; then
+    echo "$branch"; return 0
+  fi
+  # 2. origin/HEAD if it's main/master
+  branch="$(command git symbolic-ref --short refs/remotes/origin/HEAD 2>/dev/null)"
+  branch="${branch#origin/}"
+  if [[ -n $branch && ( $branch == main || $branch == master ) ]]; then
+    echo "$branch"; return 0
+  fi
+  # 3. configured default branch (init.defaultBranch)
+  branch="$(command git config --get init.defaultBranch 2>/dev/null)"
+  [[ -n $branch ]] && { echo "$branch"; return 0; }
+  echo master
+}
+git_develop_branch() {
+  command git rev-parse --git-dir &>/dev/null || return 1
+  local branch="$(command git symbolic-ref --short HEAD 2>/dev/null)"
+  [[ $branch == develop || $branch == development ]] && { echo "$branch"; return 0; }
+  command git show-ref --verify --quiet refs/remotes/origin/develop && { echo develop; return 0; }
+  command git show-ref --verify --quiet refs/remotes/origin/development && { echo development; return 0; }
+  command git show-ref --verify --quiet refs/heads/develop && { echo develop; return 0; }
+  command git show-ref --verify --quiet refs/heads/development && { echo development; return 0; }
+  echo develop
+}
+
+# Clipboard helpers
+if (( $+commands[wl-copy] )); then
+  copy()  { if (( $# )); then printf '%s' "$*" | wl-copy; else wl-copy; fi }
+  paste() { wl-paste --no-newline; }
+  copypath() { printf '%s' "$PWD" | wl-copy; }
+  copyfile() { wl-copy < "$1"; }
+elif (( $+commands[xclip] )); then
+  copy()  { if (( $# )); then printf '%s' "$*" | xclip -selection clipboard; else xclip -selection clipboard; fi }
+  paste() { xclip -selection clipboard -o; }
+  copypath() { printf '%s' "$PWD" | xclip -selection clipboard; }
+  copyfile() { xclip -selection clipboard -in "$1"; }
+fi
 
 # zoxide - smart cd (https://github.com/ajeetdsouza/zoxide)
 eval "$(zoxide init zsh --cmd z)"
