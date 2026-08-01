@@ -64,16 +64,13 @@ if [[ -z "$PKG_MANAGER" ]]; then
 fi
 
 # ---- Config mapping (source -> target) ---------------------------------------
-# Format: "source_file:target_path"
-CONFIGS=(
+# Format: "source:target_path" (file or dir, kind auto-detected)
+LINK_CONFIGS=(
     "zshrc:$HOME/.zshrc"
     "vimrc:$HOME/.vimrc"
     "tmux.conf:$HOME/.tmux.conf"
     "alacritty.toml:$HOME/.config/alacritty/alacritty.toml"
     "gitconfig.template:$HOME/.gitconfig"
-)
-
-DIR_CONFIGS=(
     "nvim:$HOME/.config/nvim"
     "awesome:$HOME/.config/awesome"
 )
@@ -115,12 +112,12 @@ ensure_dir() {
     fi
 }
 
-symlink_config() {
+link_config() {
     local src="$1"
     local dst="$2"
     local src_full="$DOTFILES_DIR/$src"
 
-    if [[ ! -f "$src_full" ]]; then
+    if [[ ! -e "$src_full" ]]; then
         warn "Source not found: $src_full"
         return
     fi
@@ -141,8 +138,8 @@ symlink_config() {
         else
             backup "$dst (would backup, different target)"
         fi
-    elif [[ -f "$dst" ]]; then
-        # File exists, not a symlink
+    elif [[ -e "$dst" ]]; then
+        # Target exists, not a symlink
         if [[ "$MODE" == "apply" ]]; then
             ensure_dir "$BACKUP_DIR"
             mv "$dst" "$BACKUP_DIR/$(basename "$dst")"
@@ -152,50 +149,7 @@ symlink_config() {
             backup "$dst (would backup)"
         fi
     else
-        # No file exists, just symlink
-        if [[ "$MODE" == "apply" ]]; then
-            ensure_dir "$(dirname "$dst")"
-            ln -sf "$src_full" "$dst"
-        fi
-        create "$dst -> $src"
-    fi
-}
-
-symlink_dir() {
-    local src="$1"
-    local dst="$2"
-    local src_full="$DOTFILES_DIR/$src"
-
-    if [[ ! -d "$src_full" ]]; then
-        warn "Source not found: $src_full"
-        return
-    fi
-
-    if [[ -L "$dst" ]]; then
-        local current_target
-        current_target="$(readlink "$dst")"
-        if [[ "$current_target" == "$src_full" ]]; then
-            ok "$dst -> $src (already linked)"
-            return
-        fi
-        if [[ "$MODE" == "apply" ]]; then
-            ensure_dir "$BACKUP_DIR"
-            mv "$dst" "$BACKUP_DIR/$(basename "$dst")"
-            backup "$dst -> $BACKUP_DIR/$(basename "$dst")"
-            ln -sf "$src_full" "$dst"
-        else
-            backup "$dst (would backup, different target)"
-        fi
-    elif [[ -d "$dst" ]]; then
-        if [[ "$MODE" == "apply" ]]; then
-            ensure_dir "$BACKUP_DIR"
-            mv "$dst" "$BACKUP_DIR/$(basename "$dst")"
-            backup "$dst -> $BACKUP_DIR/$(basename "$dst")"
-            ln -sf "$src_full" "$dst"
-        else
-            backup "$dst (would backup)"
-        fi
-    else
+        # No target exists, just symlink
         if [[ "$MODE" == "apply" ]]; then
             ensure_dir "$(dirname "$dst")"
             ln -sf "$src_full" "$dst"
@@ -277,14 +231,9 @@ main() {
 
     # Symlink configs
     info "Setting up config symlinks..."
-    for entry in "${CONFIGS[@]}"; do
+    for entry in "${LINK_CONFIGS[@]}"; do
         IFS=':' read -r src dst <<< "$entry"
-        symlink_config "$src" "$dst"
-    done
-
-    for entry in "${DIR_CONFIGS[@]}"; do
-        IFS=':' read -r src dst <<< "$entry"
-        symlink_dir "$src" "$dst"
+        link_config "$src" "$dst"
     done
 
     # Warn about legacy alacritty config
