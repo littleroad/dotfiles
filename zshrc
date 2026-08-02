@@ -41,6 +41,7 @@ HISTSIZE=100000
 SAVEHIST=100000
 HIST_STAMPS="yyyy-mm-dd"       # history command output timestamp format
 COMPLETION_WAITING_DOTS="true" # show dots while completion is running
+HISTORY_IGNORE='(ls|cd|pwd|clear|exit|ll|la) *'  # skip noise commands
 
 # ---- Completion ------------------------------------------------------------
 # Cache completion to speed up startup
@@ -54,6 +55,7 @@ zstyle ':completion:*' list-colors "${(s.:.)LS_COLORS}"
 zstyle ':completion:*:*:kill:*:processes' list-colors '=(#b) #([0-9]#)*=0=01;31'
 zstyle ':completion:*:*:*:*:processes' command "ps -u $USER -o pid,user,comm -w -w"
 zstyle ':completion:*' special-dirs true  # complete . and ..
+zstyle ':completion:*' file-sort modification  # recent files first
 
 # Create cache dir if needed
 [[ -d "$HOME/.zsh_cache" ]] || mkdir -p "$HOME/.zsh_cache"
