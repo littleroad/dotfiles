@@ -1,0 +1,312 @@
+# ============================================================
+# NeoMutt Config — Gmail, vim-style keymap
+# ============================================================
+
+# ============================================================
+# Account  (PRIVATE)
+#   realname / from / imap_user / smtp_url live in
+#   ~/.config/neomutt/account — never committed to dotfiles.
+# ============================================================
+source ~/.config/neomutt/account
+
+# ============================================================
+# Credentials (PRIVATE)
+#   Passwords live in ~/.config/neomutt/credentials (chmod 600).
+#   If the entries are commented out, NeoMutt prompts for them.
+# ============================================================
+source ~/.config/neomutt/credentials
+
+# ============================================================
+# IMAP  (server settings only; user comes from account file)
+# ============================================================
+set folder = "imaps://imap.gmail.com:993"
+set spoolfile = "+INBOX"
+
+# ============================================================
+# SMTP  (server URL comes from the account file)
+# ============================================================
+
+# ============================================================
+# Gmail folders
+# ============================================================
+set postponed = "+[Gmail]/Drafts"
+set record = "+[Gmail]/Sent Mail"
+set trash = "+[Gmail]/Trash"
+mailboxes "+INBOX" "+[Gmail]/All Mail" "+[Gmail]/Drafts" "+[Gmail]/Sent Mail" "+[Gmail]/Trash"
+
+# ============================================================
+# TLS
+# ============================================================
+set ssl_force_tls = yes
+
+# ============================================================
+# Cache
+# ============================================================
+set header_cache = "~/.cache/neomutt/headers"
+set message_cachedir = "~/.cache/neomutt/bodies"
+
+# ============================================================
+# Editor
+# ============================================================
+set editor = "nvim +'set ft=mail'"
+set wait_key = no
+set edit_headers = yes        # edit full headers (To/Cc/Bcc/Reply-To) in nvim
+
+# ============================================================
+# Display
+# ============================================================
+set charset = "utf-8"
+set pipe_decode = yes
+set narrow_tree = yes
+set thread_received = yes
+set use_threads = yes         # thread view (modern spelling)
+set sort = reverse-last-date-received  # threads newest-activity first
+set sort_aux = reverse-last-date-received  # newest-first inside threads
+set date_format = "%m/%d %H:%M"
+set index_format = "%Z%C %-6.6L %-18.18F %s"
+
+# ============================================================
+# Reading (vim-friendly)
+# ============================================================
+set pager_stop = yes          # stop at end of message, don't hop to the next one
+set pager_index_lines = 5     # keep a few index lines visible while reading
+set smart_wrap = yes          # wrap on word boundaries
+alternative_order text/plain text/enriched text/html   # prefer plain text
+set collapse_all = yes        # enter a folder fully collapsed (unfold with h)
+set uncollapse_jump = yes     # h on a thread jumps to its newest message
+
+# ============================================================
+# IMAP tuning
+# ============================================================
+set timeout = 60
+set mail_check = 60
+set imap_keep_alive = 300
+set imap_idle = yes           # instant new-mail alerts via Gmail IDLE
+set mail_check_stats = yes    # fetch unread/total/flagged counts for all mailboxes
+
+# ============================================================
+# Kernel / LKML (lore + b4)
+# ============================================================
+set strict_threads = yes        # thread only by In-Reply-To/References
+set attach_save_dir = "~/.local/share/neomutt/patches"   # 's' saves patch attachments here
+
+# ============================================================
+# Convenience
+# ============================================================
+set confirm_append = no       # don't ask "Append to mailbox?" when saving
+set confirm_create = no       # don't ask before creating a new mailbox
+
+# ============================================================
+# Aliases
+# ============================================================
+set alias_file = "~/.config/neomutt/aliases"
+set reverse_alias = yes       # show known names instead of raw addresses
+source ~/.config/neomutt/aliases
+
+# ============================================================
+# Status line
+# ============================================================
+set status_format = " %r %f %<n?[%n new]>%<t?[%t tag]>%<d?[%d del]> %m/%M %<V?[%V]> | %s/%S "
+
+# ============================================================
+# Sidebar
+# ============================================================
+set sidebar_visible = yes
+set sidebar_width = 30
+set sidebar_short_path = yes
+set sidebar_format = "%B%?F? [%F]?%* %<N?%N/%S>"
+
+# ============================================================
+# Vim-style keybindings
+# ============================================================
+# Note: the "editor" menu (typing prompts) is deliberately left as-is —
+# binding plain letters there would break typing. The menus below are
+# command-mode, where vim keys make sense.
+
+# --- free the vim prefix key 'g' (gg / gt / gT / gf) ---
+bind index g noop
+bind pager g noop
+bind attach g noop
+bind browser,alias g noop
+
+# ---------- INDEX (message list) ----------
+
+# movement (vim: h j k l, gg G, [ ])
+bind index j next-entry
+bind index k previous-entry
+bind index h collapse-thread          # left: collapse/expand thread
+bind index l display-message          # right: open message
+bind index gg first-entry
+bind index 0 first-entry           # vim 0 = start of line -> first entry
+bind index G last-entry
+bind index [ previous-thread
+bind index ] next-thread
+bind index <space> next-page          # scroll (like less)
+bind index - previous-page
+bind index <c-f> next-page
+bind index <c-b> previous-page
+bind index <c-d> half-down
+bind index <c-u> half-up
+
+# search (vim: / ? n N)
+bind index / search                   # default
+bind index ? search-reverse
+bind index n search-next              # default
+bind index N search-opposite
+bind index z limit                    # vim z = folds -> limit the view
+
+# actions (vim semantics where they fit)
+bind index d delete-message           # default
+bind index u undelete-message         # default (vim u = undo)
+bind index D delete-pattern           # default
+bind index U undelete-pattern         # default
+bind index y copy-message             # vim y = yank/copy
+bind index s save-message             # default
+bind index t tag-entry                # tag current message
+bind index T tag-pattern              # default
+bind index v view-attachments         # default
+bind index a group-reply              # gmail-style 'a' = reply-all
+bind index <esc>a create-alias        # alias creation moved off 'a'
+bind index r reply                    # default
+bind index R recall-message           # default
+bind index f forward-message          # default
+bind index m mail                     # default
+bind index q quit                     # default
+bind index x exit                     # default
+bind index <f5> imap-fetch-mail       # was 'G' (vim G = last-entry)
+bind index <f6> next-new-then-unread  # was <tab> (tab toggles the sidebar)
+
+# ---------- PAGER (reading) ----------
+
+bind pager j next-line                # default
+bind pager k previous-line            # default
+bind pager gg top
+bind pager G bottom
+bind pager l next-entry               # forward: jump to next message
+bind pager h display-toggle-weed      # default: show/hide headers
+bind pager <space> next-page          # default
+bind pager b previous-page            # vim b = back
+bind pager <c-f> next-page
+bind pager <c-b> previous-page
+bind pager <c-d> half-down
+bind pager <c-u> half-up
+bind pager ? search-reverse
+bind pager N search-opposite
+bind pager q exit                     # default
+# 'v' = view-attachments, 'H' = skip-headers, 'S' = skip-quoted (defaults kept)
+
+# ---------- ATTACH (MIME attachments) ----------
+
+bind attach j next-entry
+bind attach k previous-entry
+bind attach gg first-entry
+bind attach G last-entry
+bind attach h exit
+bind attach l view-attach
+bind attach q exit                    # default
+
+# ---------- BROWSER / ALIAS (folder & address lists) ----------
+
+bind browser,alias j next-entry
+bind browser,alias k previous-entry
+bind browser,alias gg first-entry
+bind browser,alias G last-entry
+bind browser,alias l select-entry
+bind browser,alias h exit
+
+# ---------- SIDEBAR (mailboxes ~ vim tabs/buffers) ----------
+
+bind index,pager <tab> sidebar-toggle-visible
+bind index,pager gt sidebar-next      # like vim gt (next tab)
+bind index,pager gT sidebar-prev      # like vim gT (previous tab)
+bind index,pager gf sidebar-open      # like vim gf (open file under cursor)
+bind index,pager <down> sidebar-next  # mailbox-centric arrows
+bind index,pager <up> sidebar-prev
+
+# ---------- Help ----------
+
+bind index,pager,attach <f1> help
+
+# ============================================================
+# Macros
+# ============================================================
+
+# Archive to All Mail
+macro index A "<save-message>+[Gmail]/All Mail<enter>" "Archive"
+
+# c shows the folder list directly
+macro index c "<change-folder>?" "Show folder list"
+
+# ============================================================
+# Colors — Index
+# ============================================================
+color index brightcyan default ~T
+color index magenta default ~D
+color index brightyellow blue ~F
+color indicator white color238        # selected message
+
+# ============================================================
+# Colors — Sidebar
+# ============================================================
+color sidebar_background default black
+color sidebar_indicator  default color17
+color sidebar_highlight  white   color238
+color sidebar_spool_file yellow  default
+color sidebar_new        green   default
+color sidebar_ordinary   default default
+color sidebar_flagged    red     default
+color sidebar_divider    color8  default
+
+# ============================================================
+# Colors — Status bar
+# ============================================================
+color status brightwhite black
+color message yellow default
+color error red default
+color prompt brightblue default
+color search brightwhite default
+
+# ============================================================
+# Colors — Body (general)
+# ============================================================
+color body brightred default "[\-\.+_a-zA-Z0-9]+@[\-\.a-zA-Z0-9]+"
+color body brightblue default "(https?|ftp)://[\-\.,/%~_:?&=\#a-zA-Z0-9]+"
+color body green default "\`[^\`]*\`"
+color body brightcyan default "[;:][-o][)/(|]"
+
+# ============================================================
+# Colors — Patch syntax
+# ============================================================
+color body green default "^diff \-.*"
+color body brightwhite default "^index [a-f0-9].*"
+color body white default "^---$"
+color body white default "^--- .*"
+color body white default "^[+][+][+].*"
+color body green default "^[+].*"
+color body red default "^-.*"
+color body brightblue default "^@@ .*"
+color body cyan default "^(Signed-off-by).*"
+color body cyan default "^(Reviewed-by).*"
+color body cyan default "^(Acked-by).*"
+color body cyan default "^(Tested-by).*"
+color body yellow default "^(Cc).*"
+
+# ============================================================
+# Colors — Reading (headers, quoting, tree)
+# ============================================================
+color header brightwhite default "^From:"
+color header brightyellow default "^Subject:"
+color header brightcyan default "^(Date|Sent):"
+color header brightgreen default "^To:"
+color header brightgreen default "^Cc:"
+color header brightred default "^Reply-To:"
+color tree color8 default
+color markers color8 default
+color tilde color8 default
+color quoted green default
+color quoted1 green default
+color quoted2 magenta default
+color quoted3 cyan default
+color quoted4 yellow default
+color signature brightcyan default
+color attachment brightyellow default

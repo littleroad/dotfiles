@@ -1,0 +1,16 @@
+# ============================================================
+# NeoMutt account settings — TEMPLATE (private on each machine)
+#
+# Copy this to ~/.config/neomutt/account on a new machine and
+# fill in your details, then:  chmod 600 ~/.config/neomutt/account
+#
+# NOTE: do NOT symlink this file into place — it must stay
+# private.  Also copy credentials (imap_pass/smtp_pass) into
+# ~/.config/neomutt/credentials.
+# ============================================================
+set realname = "Your Name"
+set from = "you@gmail.com"
+set use_from = yes
+set envelope_from_address = "you@gmail.com"
+set imap_user = "you@gmail.com"
+set smtp_url = "smtps://you@gmail.com@smtp.gmail.com:465/"

@@ -73,6 +73,7 @@ LINK_CONFIGS=(
     "gitconfig.template:$HOME/.gitconfig"
     "nvim:$HOME/.config/nvim"
     "awesome:$HOME/.config/awesome"
+    "neomutt/neomuttrc:$HOME/.config/neomutt/neomuttrc"
 )
 
 # ---- Dependencies (neutral names; per-manager mapping below) -----------------

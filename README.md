@@ -13,6 +13,11 @@ Personal configuration files for Arch Linux.
 | `gitconfig.template` | `~/.gitconfig` | Git defaults (append to existing config) |
 | `nvim/` | `~/.config/nvim/` | Neovim config for C/C++ kernel development (clangd, treesitter, telescope, cscope) |
 | `awesome/` | `~/.config/awesome/` | AwesomeWM config: modular rc.lua, keybindings, widgets, Arc Dark theme |
+| `neomutt/neomuttrc` | `~/.config/neomutt/neomuttrc` | NeoMutt config with vim-style keymap (Gmail) |
+
+> **Private files (not tracked):** `~/.config/neomutt/account` (realname/from/imap/smtp) and
+> `~/.config/neomutt/credentials` (passwords). Copy `neomutt/account.template` to
+> `~/.config/neomutt/account` on a new machine and fill it in — never symlink it.
 
 ## Install
 
