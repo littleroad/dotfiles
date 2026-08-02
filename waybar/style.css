@@ -1,78 +1,71 @@
 * {
     border: none;
     border-radius: 0;
-    font-family: "JetBrainsMono Nerd Font", "WenQuanYi Micro Hei", sans-serif;
+    font-family: "Noto Sans", "Font Awesome 6 Free", sans-serif;
     font-size: 13px;
     min-height: 0;
 }
 
 window#waybar {
-    background: rgba(26, 27, 38, 0.9);
-    color: #cdd6f4;
-    border-bottom: 1px solid rgba(69, 71, 90, 0.8);
+    background: rgba(46, 52, 64, 0.85);
+    color: #d8dee9;
+    border-bottom: 2px solid rgba(94, 129, 172, 0.5);
 }
 
 #workspaces button {
-    padding: 0 5px;
+    padding: 0 8px;
     background: transparent;
-    color: #585b70;
+    color: #81a1c1;
     border-bottom: 2px solid transparent;
 }
 
-#workspaces button.active {
-    color: #cdd6f4;
-    border-bottom: 2px solid #89b4fa;
-}
-
-#workspaces button:hover {
-    background: rgba(69, 71, 90, 0.5);
-    text-shadow: inherit;
+#workspaces button.focused {
+    color: #8fbcbb;
+    border-bottom: 2px solid #8fbcbb;
+    background: rgba(143, 188, 187, 0.1);
 }
 
 #workspaces button.urgent {
-    color: #f38ba8;
+    color: #bf616a;
+    border-bottom: 2px solid #bf616a;
+}
+
+#workspaces button:hover {
+    background: rgba(143, 188, 187, 0.15);
+    border-bottom: 2px solid #8fbcbb;
+}
+
+#window {
+    padding: 0 10px;
+    color: #d8dee9;
+}
+
+#clock,
+#cpu,
+#memory,
+#network,
+#pulseaudio,
+#tray {
+    padding: 0 8px;
+    margin: 0 2px;
 }
 
 #pulseaudio {
-    padding: 0 8px;
-    color: #a6e3a1;
+    color: #a3be8c;
 }
 
-#pulseaudio.muted {
-    color: #585b70;
+#network {
+    color: #b48ead;
 }
 
-#battery {
-    padding: 0 8px;
-    color: #f9e2af;
+#cpu {
+    color: #ebcb8b;
 }
 
-#battery.charging {
-    color: #a6e3a1;
-}
-
-#battery.warning {
-    color: #fab387;
-}
-
-#battery.critical {
-    color: #f38ba8;
+#memory {
+    color: #d08770;
 }
 
 #clock {
-    padding: 0 8px;
-    color: #89b4fa;
-}
-
-#tray {
-    padding: 0 4px;
-}
-
-#tray > .passive {
-    -gtk-icon-effect: dim;
-}
-
-#tray > .needs-attention {
-    -gtk-icon-effect: highlight;
-    background-color: #f38ba8;
+    color: #8fbcbb;
 }

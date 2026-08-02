@@ -1,56 +1,90 @@
+// Waybar Config
 {
-  "layer": "top",
-  "position": "top",
-  "height": 30,
-  "spacing": 4,
-  "modules-left": ["hyprland/workspaces"],
-  "modules-center": [],
-  "modules-right": ["tray", "pulseaudio", "battery", "clock"],
+    "layer": "top",
+    "position": "top",
+    "height": 30,
+    "spacing": 4,
+    "modules-left": ["hyprland/workspaces", "hyprland/submap", "custom/media"],
+    "modules-center": ["hyprland/window"],
+    "modules-right": ["tray", "pulseaudio", "network", "cpu", "memory", "clock", "custom/power"],
 
-  "hyprland/workspaces": {
-    "disable-scroll": false,
-    "all-outputs": true,
-    "format": "{icon}",
-    "on-click": "activate",
-    "persistent-workspaces": {
-      "*": 2
-    }
-  },
-
-  "pulseaudio": {
-    "format": "{icon} {volume}%",
-    "format-muted": "🔇",
-    "format-icons": {
-      "default": ["🔈", "🔉", "🔊"]
+    // Workspaces
+    "hyprland/workspaces": {
+        "disable-scroll": true,
+        "all-outputs": true,
+        "format": "{name}",
+        "on-click": "activate",
+        "persistent-workspaces": {
+            "1": [],
+            "2": [],
+            "3": [],
+            "4": [],
+            "5": [],
+            "6": [],
+            "7": [],
+            "8": [],
+            "9": [],
+            "10": []
+        }
     },
-    "on-click": "pavucontrol"
-  },
 
-  "battery": {
-    "bat": "BAT0",
-    "adapter": "ACAD",
-    "format": "{icon} {capacity}%",
-    "format-icons": ["🔋", "🔋", "🔋", "🔋", "🔋"],
-    "format-charging": "⚡ {capacity}%",
-    "format-plugged": "🔌 {capacity}%",
-    "format-full": "🔋 100%",
-    "tooltip": true
-  },
-
-  "clock": {
-    "format": "{:%a %Y/%m/%d %H:%M:%S}",
-    "tooltip-format": "<tt><small>{calendar}</small></tt>",
-    "calendar": {
-      "mode": "month",
-      "on-scroll": 1,
-      "format": {
-        "months": "<span color='#ffb3b3'><b>{}</b></span>",
-        "days": "<span color='#e6e6e6'><b>{}</b></span>",
-        "weeks": "<span color='#99ff99'><b>W{}</b></span>"
-      }
+    // Current window title
+    "hyprland/window": {
+        "format": "{}",
+        "max-length": 60,
+        "separate-outputs": true
     },
-    "actions": {
-      "on-click-right": "mode"
+
+    // Submap indicator
+    "hyprland/submap": {
+        "format": "<span style=\"italic\"> {} </span>",
+        "tooltip": false
+    },
+
+    // Audio
+    "pulseaudio": {
+        "format": "{icon} {volume}%",
+        "format-muted": "🔇 Muted",
+        "format-icons": {
+            "default": ["🔈", "🔉", "🔊"]
+        },
+        "on-click": "pavucontrol",
+        "tooltip": true,
+        "tooltip-format": "{desc}"
+    },
+
+    // Network
+    "network": {
+        "format-wifi": "📶 {essid}",
+        "format-ethernet": "🌐 {ipaddr}",
+        "format-disconnected": "❌ Offline",
+        "tooltip": true,
+        "tooltip-format": "{ifname} via {gwaddr}",
+        "on-click": "nm-connection-editor"
+    },
+
+    // CPU
+    "cpu": {
+        "format": "🧠 {usage}%",
+        "interval": 5
+    },
+
+    // Memory
+    "memory": {
+        "format": "💾 {}%",
+        "interval": 10
+    },
+
+    // Clock
+    "clock": {
+        "format": "📅 {:%Y-%m-%d %H:%M}",
+        "tooltip": true,
+        "tooltip-format": "<big>{:%Y %B}</big>\n<tt><small>{calendar}</small></tt>",
+        "interval": 60
+    },
+
+    // System Tray
+    "tray": {
+        "spacing": 8
     }
-  }
 }
