@@ -67,7 +67,7 @@ hl.config({
         sensitivity   = 0,
 
         touchpad = {
-            natural_scroll        = true,
+            natural_scroll        = false,
             tap_to_click          = true,
             tap_and_drag          = false,
             disable_while_typing  = true,
@@ -211,42 +211,7 @@ hl.window_rule({
     match = { class = "firefox" },
     opacity = 0.95,
 })
-hl.window_rule({
-    name  = "workspace1-alacritty",
-    match = { class = "Alacritty" },
-    workspace = 1,
-})
-hl.window_rule({
-    name  = "workspace2-firefox",
-    match = { class = "firefox" },
-    workspace = 2,
-})
 
-hl.window_rule({
-    name  = "workspace5-telegram",
-    match = { class = "Telegram" },
-    workspace = 5,
-})
-hl.window_rule({
-    name  = "workspace6-keepassxc",
-    match = { class = "org.keepassxc.KeePassXC" },
-    workspace = 6,
-})
-hl.window_rule({
-    name  = "workspace7-nautilus",
-    match = { class = "org.gnome.Nautilus" },
-    workspace = 7,
-})
-hl.window_rule({
-    name  = "workspace7-pcmanfm",
-    match = { class = "pcmanfm" },
-    workspace = 7,
-})
-hl.window_rule({
-    name  = "workspace8-software",
-    match = { class = "org.gnome.Software|pamac-manager" },
-    workspace = 8,
-})
 hl.window_rule({
     name  = "noblur-swaybg",
     match = { class = "swaybg" },
