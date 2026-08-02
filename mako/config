@@ -1,0 +1,25 @@
+# Mako notification daemon config
+# See: man 5 mako
+
+# Appearance
+background-color=#1a1b26
+text-color=#cdd6f4
+border-color=#89b4fa
+border-radius=8
+border-size=2
+default-timeout=5000
+ignore-timeout=1
+width=400
+height=150
+max-visible=5
+padding=12
+font=JetBrainsMono Nerd Font 10
+
+# Position
+anchor=top-right
+margin=12
+
+# Mouse actions
+on-click=dismiss
+on-click-middle=open-url
+on-click-right=invoke-action

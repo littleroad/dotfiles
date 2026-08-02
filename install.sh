@@ -12,6 +12,7 @@ BACKUP_DIR="$HOME/.config-backup/$(date +%Y%m%d-%H%M%S)"
 # ---- Defaults ----------------------------------------------------------------
 MODE="apply"
 PKG_MANAGER=""
+EXCLUDES=()
 
 # ---- Colors ------------------------------------------------------------------
 RED='\033[0;31m'
@@ -36,6 +37,7 @@ Usage: $(basename "$0") [OPTIONS]
 Options:
   --check     Dry run: show what would be done without making changes
   --apply     Apply changes (default)
+  --exclude   Skip a config by source name (may be repeated: --exclude awesome --exclude vimrc)
   --pacman    Use pacman for package installation (Arch Linux)
   --apt       Use apt for package installation (Debian/Ubuntu)
   -h, --help  Show this help message
@@ -43,6 +45,7 @@ Options:
 Examples:
   $(basename "$0") --check --pacman    # Preview on Arch
   $(basename "$0") --apply --apt       # Install on Ubuntu
+  $(basename "$0") --apply --pacman --exclude awesome  # Skip awesome WM config
 EOF
     exit 0
 }
@@ -54,6 +57,7 @@ while [[ $# -gt 0 ]]; do
         --apply)  MODE="apply"; shift ;;
         --pacman) PKG_MANAGER="pacman"; shift ;;
         --apt)    PKG_MANAGER="apt"; shift ;;
+        --exclude) EXCLUDES+=("$2"); shift 2 ;;
         -h|--help) usage ;;
         *) fail "Unknown option: $1" ;;
     esac
@@ -73,6 +77,9 @@ LINK_CONFIGS=(
     "gitconfig.template:$HOME/.gitconfig"
     "nvim:$HOME/.config/nvim"
     "awesome:$HOME/.config/awesome"
+    "hypr:$HOME/.config/hypr"
+    "waybar:$HOME/.config/waybar"
+    "mako:$HOME/.config/mako"
     "neomutt/neomuttrc:$HOME/.config/neomutt/neomuttrc"
 )
 
@@ -85,6 +92,15 @@ DEPS=(
     "neovim"
     "tmux"
     "fzf"
+    "hyprland"
+    "waybar"
+    "mako"
+    "grim"
+    "slurp"
+    "swaybg"
+    "swaylock"
+    "wofi"
+    "wl-clipboard"
 )
 
 # ---- Package manager adapters ------------------------------------------------
@@ -246,6 +262,15 @@ main() {
     info "Setting up config symlinks..."
     for entry in "${LINK_CONFIGS[@]}"; do
         IFS=':' read -r src dst <<< "$entry"
+        # Skip if excluded by --exclude
+        local skip=false
+        for x in "${EXCLUDES[@]}"; do
+            if [[ "$src" == "$x" ]]; then
+                skip=true
+                break
+            fi
+        done
+        $skip && continue
         link_config "$src" "$dst"
     done
 
