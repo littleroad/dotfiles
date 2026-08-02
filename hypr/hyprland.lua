@@ -161,18 +161,6 @@ hl.config({
     },
 })
 
-hl.config({
-    master = {
-        allow_small_split    = true,
-        always_keep_position = true,
-        orientation          = "left",
-        mfact                = 0.55,
-        new_status           = "master",
-        smart_resizing       = true,
-        drop_at_cursor       = true,
-    },
-})
-
 
 -- ---- Window Rules -----------------------------------------------------------
 
@@ -253,11 +241,12 @@ hl.bind(M .. " + SHIFT + C", hl.dsp.window.close())
 hl.bind(M .. " + SHIFT + Q", hl.dsp.exit())
 
 -- Fullscreen / Toggle float / Pseudo / Cycle next / Minimize
-hl.bind(M .. " + F",     hl.dsp.window.fullscreen({ action = "toggle" }))
+hl.bind(M .. " + F",     hl.dsp.window.fullscreen({ action = "toggle", mode = "fullscreen" }))
 hl.bind(M .. " + CTRL + Space", hl.dsp.window.float({ action = "toggle" }))
-hl.bind(M .. " + P",     hl.dsp.window.pseudo())
+hl.bind(M .. " + SHIFT + P", hl.dsp.window.pseudo())
 hl.bind(M .. " + Tab",   hl.dsp.window.cycle_next())
 hl.bind(M .. " + N",     hl.dsp.window.set_prop({ prop = "minimized", value = "true" }))
+hl.bind(M .. " + M",     hl.dsp.window.fullscreen({ action = "toggle", mode = "maximized" }))
 hl.bind(M .. " + CTRL + N", hl.dsp.exec_cmd("hyprctl dispatch focusurgentorlast"))
 
 -- Resize submap

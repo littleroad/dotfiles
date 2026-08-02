@@ -3,17 +3,4 @@ patch:
     - schema: rime_ice              # 雾凇拼音（全拼）
     - schema: double_pinyin_flypy   # 小鹤双拼
 
-  switches:
-    - name: ascii_mode
-      reset: 0
-      states: [ 中文, 西文 ]
-    - name: normalization
-      reset: 1
-    - name: traditionalization
-      reset: 0                      # 0 = 简体 (Simplified), 1 = 繁体 (Traditional)
-      states: [ 汉字, 漢字 ]
-    - name: emoji
-      reset: 1
-      states: [ 💀, 😄 ]
-    - name: full_shape
-      states: [ 半角, 全角 ]
+  # 开关统一由各 schema 的 custom 文件决定；此处不定义，避免与 rime_ice/double_pinyin_flypy 的 switches: [] 冲突

@@ -1,6 +1,11 @@
 patch:
-  # 清空开关选项，方案选单只显示输入方案
+  # 清空开关选项，方案选单只显示输入方案（有意为之，见 default.custom.yaml）
   switches: []
+
+  # 本文件专用于 double_pinyin_flypy（小鹤双拼）。
+  # 与 rime_ice.custom.yaml 的差异：
+  #   - 需显式 translator/comment_format 生成 ［］ 供 flypy_hint 识别双拼注释
+  #   - filter 链没有 v_filter 与 long_word_filter（双拼 speller 不需要这两条）
 
   # corrector.lua 用此 style 重建注释（保留 ［］ 供 flypy_hint 识别）
   corrector: '［{comment}］'
