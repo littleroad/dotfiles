@@ -221,11 +221,7 @@ hl.window_rule({
     match = { class = "firefox" },
     workspace = 2,
 })
-hl.window_rule({
-    name  = "workspace3-chrome",
-    match = { class = "google-chrome-canary" },
-    workspace = 3,
-})
+
 hl.window_rule({
     name  = "workspace5-telegram",
     match = { class = "Telegram" },
