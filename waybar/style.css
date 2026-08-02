@@ -45,9 +45,10 @@ window#waybar {
 #memory,
 #network,
 #pulseaudio,
+#battery,
 #tray {
-    padding: 0 8px;
-    margin: 0 2px;
+    padding: 0 6px;
+    margin: 0;
 }
 
 #battery {
