@@ -11,8 +11,10 @@ opt.sidescrolloff = 5     -- Keep 5 columns visible (default: 0)
 -- File handling
 opt.mouse = 'a'           -- Enable mouse (default: '')
 opt.swapfile = false      -- No swap files (default: true)
+opt.undofile = true       -- Persistent undo across sessions
 opt.autoread = true       -- Auto-reload files changed externally (default: false)
 opt.autowrite = true
+opt.updatetime = 100      -- ms; gitsigns/CursorHold refresh interval (default: 4000)
 opt.backup = false        -- No backup files (default: true for some)
 opt.writebackup = false   -- No write backup (default: true)
 
@@ -31,8 +33,11 @@ opt.winblend = 17         -- Window transparency (default: 0)
 opt.winborder = "rounded"
 
 -- Search and display
+opt.ignorecase = true     -- Case-insensitive search (default: false)
+opt.smartcase = true      -- ...unless query contains uppercase
 opt.linebreak = true      -- Break at word boundaries (default: false)
 opt.breakindent = true    -- Indent wrapped lines (default: false)
+opt.signcolumn = 'yes'    -- Always show sign column (no layout shift with gitsigns)
 
 -- Remove = from filename characters
 opt.isfname:remove('=')
@@ -44,7 +49,7 @@ opt.switchbuf = 'useopen,usetab'  -- Smart buffer switching
 -- Misc improvements
 opt.wildmode = "longest,list,full"
 opt.completeopt = "menuone,popup,longest"
-opt.timeoutlen = 2000
+opt.timeoutlen = 400
 
 -- Leader key
 vim.g.mapleader = ','
