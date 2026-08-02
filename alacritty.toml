@@ -3,7 +3,7 @@ TERM = "alacritty"
 
 [terminal.shell]
 program = "/usr/bin/zsh"
-args = ["-l"]
+args = []
 
 [font]
 size = 13.0
