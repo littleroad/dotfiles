@@ -296,7 +296,7 @@ hl.bind(M .. " + F",     hl.dsp.window.fullscreen({ action = "toggle" }))
 hl.bind(M .. " + CTRL + Space", hl.dsp.window.float({ action = "toggle" }))
 hl.bind(M .. " + P",     hl.dsp.window.pseudo())
 hl.bind(M .. " + Tab",   hl.dsp.window.cycle_next())
-hl.bind(M .. " + N",     hl.dsp.window.set_prop({ prop = "minimized", value = true }))
+hl.bind(M .. " + N",     hl.dsp.window.set_prop({ prop = "minimized", value = "true" }))
 hl.bind(M .. " + CTRL + N", hl.dsp.exec_cmd("hyprctl dispatch focusurgentorlast"))
 
 -- Resize submap
