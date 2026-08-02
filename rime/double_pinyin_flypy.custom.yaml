@@ -1,0 +1,26 @@
+patch:
+  # 清空开关选项，方案选单只显示输入方案
+  switches: []
+
+  # corrector.lua 用此 style 重建注释（保留 ［］ 供 flypy_hint 识别）
+  corrector: '［{comment}］'
+
+  # corrector.lua 依赖此设置保留拼音注释
+  translator/keep_comments: true
+
+  translator/comment_format:
+    - "xform/^/［/"
+    - "xform/$/］/"
+
+  # 完整过滤器链 = 原始 9 个 + 末尾追加双拼键位提示
+  engine/filters:
+    - lua_filter@*corrector
+    - reverse_lookup_filter@radical_reverse_lookup
+    - lua_filter@*autocap_filter
+    - lua_filter@*pin_cand_filter
+    - lua_filter@*reduce_english_filter
+    - simplifier@emoji
+    - simplifier@traditionalize
+    - lua_filter@*search@radical_pinyin
+    - uniquifier
+    - lua_filter@flypy_hint

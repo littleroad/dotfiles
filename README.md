@@ -13,6 +13,10 @@ Personal configuration files for Arch Linux.
 | `gitconfig.template` | `~/.gitconfig` | Git defaults (append to existing config) |
 | `nvim/` | `~/.config/nvim/` | Neovim config for C/C++ kernel development (clangd, treesitter, telescope, cscope) |
 | `awesome/` | `~/.config/awesome/` | AwesomeWM config: modular rc.lua, keybindings, widgets, Arc Dark theme |
+| `hypr/` | `~/.config/hypr/` | Hyprland config: keybindings, animations, input method env |
+| `waybar/` | `~/.config/waybar/` | Waybar status bar for Hyprland |
+| `mako/` | `~/.config/mako/` | Mako notification daemon config |
+| `rime/` | `~/.local/share/fcitx5/rime/` | Rime/Fcitx5 config: 雾凇拼音+小鹤双拼, 全拼显示双拼键位提示 |
 | `neomutt/neomuttrc` | `~/.config/neomutt/neomuttrc` | NeoMutt config with vim-style keymap (Gmail) |
 
 > **Private files (not tracked):** `~/.config/neomutt/account` (realname/from/imap/smtp) and

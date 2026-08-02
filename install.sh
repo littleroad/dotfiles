@@ -81,6 +81,12 @@ LINK_CONFIGS=(
     "waybar:$HOME/.config/waybar"
     "mako:$HOME/.config/mako"
     "neomutt/neomuttrc:$HOME/.config/neomutt/neomuttrc"
+    # Rime 配置（只链配置文件，build/userdb 等运行时数据留在原处）
+    "rime/default.custom.yaml:$HOME/.local/share/fcitx5/rime/default.custom.yaml"
+    "rime/rime_ice.custom.yaml:$HOME/.local/share/fcitx5/rime/rime_ice.custom.yaml"
+    "rime/double_pinyin_flypy.custom.yaml:$HOME/.local/share/fcitx5/rime/double_pinyin_flypy.custom.yaml"
+    "rime/rime.lua:$HOME/.local/share/fcitx5/rime/rime.lua"
+    "rime/lua/flypy_hint.lua:$HOME/.local/share/fcitx5/rime/lua/flypy_hint.lua"
 )
 
 # ---- Dependencies (neutral names; per-manager mapping below) -----------------
