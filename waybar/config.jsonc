@@ -4,9 +4,9 @@
     "position": "top",
     "height": 30,
     "spacing": 4,
-    "modules-left": ["hyprland/workspaces", "hyprland/submap", "custom/media"],
+    "modules-left": ["hyprland/workspaces", "hyprland/submap"],
     "modules-center": ["hyprland/window"],
-    "modules-right": ["tray", "pulseaudio", "network", "cpu", "memory", "clock", "custom/power"],
+    "modules-right": ["tray", "pulseaudio", "network", "cpu", "memory", "clock", "battery"],
 
     // Workspaces
     "hyprland/workspaces": {
@@ -59,8 +59,7 @@
         "format-ethernet": "🌐 {ipaddr}",
         "format-disconnected": "❌ Offline",
         "tooltip": true,
-        "tooltip-format": "{ifname} via {gwaddr}",
-        "on-click": "nm-connection-editor"
+        "tooltip-format": "{ifname} via {gwaddr}"
     },
 
     // CPU
@@ -73,6 +72,18 @@
     "memory": {
         "format": "💾 {}%",
         "interval": 10
+    },
+
+    // Battery
+    "battery": {
+        "bat": "BAT0",
+        "adapter": "AC",
+        "format": "{icon} {capacity}%",
+        "format-icons": ["", "", "", "", ""],
+        "format-charging": "⚡ {capacity}%",
+        "format-plugged": "🔌 {capacity}%",
+        "format-full": " 100%",
+        "tooltip": true
     },
 
     // Clock

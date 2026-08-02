@@ -50,6 +50,22 @@ window#waybar {
     margin: 0 2px;
 }
 
+#battery {
+    color: #a3be8c;
+}
+
+#battery.charging {
+    color: #a3be8c;
+}
+
+#battery.warning:not(.charging) {
+    color: #ebcb8b;
+}
+
+#battery.critical:not(.charging) {
+    color: #bf616a;
+}
+
 #pulseaudio {
     color: #a3be8c;
 }
