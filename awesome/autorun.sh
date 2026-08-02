@@ -6,7 +6,7 @@ function run {
   fi
 }
 
-run "picom --config /home/luke/.config/compton.conf"
+run "picom"
 run "light-locker"
 run "fcitx5"
 run "nextcloud"

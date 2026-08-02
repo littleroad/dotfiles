@@ -35,7 +35,7 @@ screen.connect_signal("property::geometry", set_wallpaper)
 -- {{{ Taglist buttons
 local taglist_buttons = gears.table.join(
     awful.button({ }, 1, function(t)
-        i = t:get_index()
+        local i = t:get_index()
         for screen = 1, screen.count() do
             local tag = awful.tag.gettags(screen)[i]
             tag:view_only()
