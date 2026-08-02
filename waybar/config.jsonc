@@ -44,9 +44,9 @@
     // Audio
     "pulseaudio": {
         "format": "{icon} {volume}%",
-        "format-muted": "🔇 Muted",
+        "format-muted": " Muted",
         "format-icons": {
-            "default": ["🔈", "🔉", "🔊"]
+            "default": ["", "", ""]
         },
         "on-click": "pavucontrol",
         "tooltip": true,
@@ -55,22 +55,22 @@
 
     // Network
     "network": {
-        "format-wifi": "📶 {essid}",
-        "format-ethernet": "🌐 {ipaddr}",
-        "format-disconnected": "❌ Offline",
+        "format-wifi": " {essid}",
+        "format-ethernet": " {ipaddr}",
+        "format-disconnected": " Offline",
         "tooltip": true,
         "tooltip-format": "{ifname} via {gwaddr}"
     },
 
     // CPU
     "cpu": {
-        "format": "🧠 {usage}%",
+        "format": " {usage}%",
         "interval": 5
     },
 
     // Memory
     "memory": {
-        "format": "💾 {}%",
+        "format": " {}%",
         "interval": 10
     },
 
@@ -88,7 +88,7 @@
 
     // Clock
     "clock": {
-        "format": "📅 {:%Y-%m-%d %H:%M}",
+        "format": " {:%Y-%m-%d %H:%M}",
         "tooltip": true,
         "tooltip-format": "<big>{:%Y %B}</big>\n<tt><small>{calendar}</small></tt>",
         "interval": 60
