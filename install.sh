@@ -76,10 +76,13 @@ LINK_CONFIGS=(
     "alacritty.toml:$HOME/.config/alacritty/alacritty.toml"
     "gitconfig.template:$HOME/.gitconfig"
     "nvim:$HOME/.config/nvim"
+    # DEPRECATED: 已被 Hyprland 取代（保留用于回退/旧环境）
     "awesome:$HOME/.config/awesome"
-    "hypr:$HOME/.config/hypr"
+    "hypr:$HOME/.config/hypr"        # 含 hyprlock.conf（锁屏配置）
     "waybar:$HOME/.config/waybar"
     "mako:$HOME/.config/mako"
+    # DEPRECATED: 已被 hyprlock 取代（保留用于回退）
+    "swaylock:$HOME/.config/swaylock"
     "neomutt/neomuttrc:$HOME/.config/neomutt/neomuttrc"
     # Rime 配置（只链配置文件，build/userdb 等运行时数据留在原处）
     "rime/default.custom.yaml:$HOME/.local/share/fcitx5/rime/default.custom.yaml"
@@ -99,12 +102,13 @@ DEPS=(
     "tmux"
     "fzf"
     "hyprland"
+    "hyprlock"
     "waybar"
     "mako"
     "grim"
     "slurp"
     "swaybg"
-    "swaylock"
+    "swaylock"  # DEPRECATED: 已被 hyprlock 取代
     "wofi"
     "wl-clipboard"
 )

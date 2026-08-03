@@ -1,0 +1,44 @@
+# swaylock config — Nord palette, uses desktop wallpaper
+# Auto-loaded by swaylock when you run it (no -C needed).
+
+# Background: display the desktop wallpaper, filled
+image=/home/luke/.config/hypr/wallpaper.jpg
+scaling=fill
+
+# ---- Indicator (the unlock circle) ----
+indicator-radius=110
+indicator-thickness=8
+indicator-idle-visible
+
+# idle state (nord0 / nord1)
+inside-color=2e3440
+ring-color=4c566a
+line-color=3b4252
+separator-color=00000000
+text-color=d8dee9
+
+# verifying (pulsing teal — nord7)
+inside-ver-color=2e3440
+ring-ver-color=8fbcbb
+line-ver-color=434c5e
+text-ver-color=8fbcbb
+
+# wrong password (nord11)
+inside-wrong-color=2e3440
+ring-wrong-color=bf616a
+line-wrong-color=4c566a
+text-wrong-color=bf616a
+
+# clearing (reset back to idle)
+inside-clear-color=2e3440
+ring-clear-color=4c566a
+line-clear-color=3b4252
+text-clear-color=d8dee9
+
+# key presses (nord7)
+key-hl-color=8fbcbb
+bs-hl-color=bf616a
+
+# font
+font=Noto Sans
+font-size=16

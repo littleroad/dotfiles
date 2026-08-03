@@ -12,10 +12,11 @@ Personal configuration files for Arch Linux.
 | `alacritty.toml` | `~/.config/alacritty/alacritty.toml` | Alacritty terminal with JetBrainsMono Nerd Font, 80% opacity |
 | `gitconfig.template` | `~/.gitconfig` | Git defaults (append to existing config) |
 | `nvim/` | `~/.config/nvim/` | Neovim config for C/C++ kernel development (clangd, treesitter, telescope, cscope) |
-| `awesome/` | `~/.config/awesome/` | AwesomeWM config: modular rc.lua, keybindings, widgets, Arc Dark theme |
-| `hypr/` | `~/.config/hypr/` | Hyprland config: keybindings, animations, input method env |
+| `awesome/` | `~/.config/awesome/` | ⚠️ *DEPRECATED* (被 Hyprland 取代，保留回退): modular rc.lua, keybindings, widgets, Arc Dark theme |
+| `hypr/` | `~/.config/hypr/` | Hyprland config: keybindings, animations, input method env, `hyprlock.conf` (lockscreen) |
 | `waybar/` | `~/.config/waybar/` | Waybar status bar for Hyprland |
 | `mako/` | `~/.config/mako/` | Mako notification daemon config |
+| `swaylock/` | `~/.config/swaylock/` | ⚠️ *DEPRECATED* (被 hyprlock 取代，保留回退): Nord lock screen |
 | `rime/` | `~/.local/share/fcitx5/rime/` | Rime/Fcitx5 config: 雾凇拼音+小鹤双拼, 全拼显示双拼键位提示 |
 | `neomutt/neomuttrc` | `~/.config/neomutt/neomuttrc` | NeoMutt config with vim-style keymap (Gmail) |
 

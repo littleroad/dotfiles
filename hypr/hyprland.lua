@@ -234,7 +234,7 @@ hl.bind(M .. " + CTRL + A",       hl.dsp.exec_cmd("hyprshot --freeze --silent --
 hl.bind(M .. " + V", hl.dsp.exec_cmd("cliphist list | wofi --dmenu | cliphist decode | wl-copy"))
 
 -- Lock screen
-hl.bind(M .. " + Escape",         hl.dsp.exec_cmd("swaylock"))
+hl.bind(M .. " + Escape",         hl.dsp.exec_cmd("hyprlock"))
 
 -- Close window / Exit Hyprland
 hl.bind(M .. " + SHIFT + C", hl.dsp.window.close())
