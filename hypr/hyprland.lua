@@ -5,7 +5,7 @@
 -- ---- Environment Variables -------------------------------------------------
 
 hl.env("XCURSOR_SIZE", "24")
-hl.env("XCURSOR_THEME", "Adwaita")
+hl.env("XCURSOR_THEME", "Breeze_Light")
 
 -- Input Method — Rime via Fcitx5
 -- GTK_IM_MODULE intentionally unset — Wayland native protocol handles it
@@ -36,17 +36,30 @@ hl.monitor({
 -- ---- Autostart --------------------------------------------------------------
 
 hl.on("hyprland.start", function()
+    -- 环境同步（systemd / D-Bus）
     hl.exec_cmd("systemctl --user import-environment WAYLAND_DISPLAY XDG_CURRENT_DESKTOP")
     hl.exec_cmd("dbus-update-activation-environment --systemd DISPLAY WAYLAND_DISPLAY XDG_CURRENT_DESKTOP")
-    hl.exec_cmd("fcitx5 -d")
+
+    -- 系统权限 / 授权代理
     hl.exec_cmd("/usr/lib/polkit-gnome/polkit-gnome-authentication-agent-1")
-    hl.exec_cmd("waybar")
-    hl.exec_cmd("swaybg -i ~/.config/hypr/wallpaper.jpg -m fill")
-    -- hl.exec_cmd("nm-applet --indicator")  -- Removed: uses systemd-networkd, not NetworkManager
-    hl.exec_cmd("nextcloud")
-    hl.exec_cmd("blueman-applet")
-    hl.exec_cmd("cliphist store")
     hl.exec_cmd("/usr/lib/geoclue-2.0/demos/agent")
+
+    -- 桌面界面
+    hl.exec_cmd("swaybg -i ~/.config/hypr/wallpaper.jpg -m fill")
+    hl.exec_cmd("waybar")
+
+    -- 输入法
+    hl.exec_cmd("fcitx5 -d")
+
+    -- 系统托盘
+    hl.exec_cmd("blueman-applet")
+
+    -- 后台守护（剪贴板历史 / 云同步）
+    hl.exec_cmd("cliphist store")
+    hl.exec_cmd("nextcloud")
+
+    -- 应用
+    hl.exec_cmd("Telegram")
 end)
 
 
@@ -170,11 +183,6 @@ hl.window_rule({
     float = true,
 })
 hl.window_rule({
-    name  = "float-nm-connection-editor",
-    match = { class = "nm-connection-editor" },
-    float = true,
-})
-hl.window_rule({
     name  = "float-blueman-manager",
     match = { class = "blueman-manager" },
     float = true,
@@ -192,11 +200,6 @@ hl.window_rule({
 hl.window_rule({
     name  = "opacity-alacritty",
     match = { class = "Alacritty" },
-    opacity = 0.95,
-})
-hl.window_rule({
-    name  = "opacity-firefox",
-    match = { class = "firefox" },
     opacity = 0.95,
 })
 
@@ -223,18 +226,15 @@ hl.bind(M .. " + E", hl.dsp.exec_cmd("nautilus"))
 hl.bind(M .. " + D", hl.dsp.exec_cmd("wofi --show drun"))
 
 -- Screenshots
-hl.bind(M .. " + A",             hl.dsp.exec_cmd("hyprshot -m region"))
-hl.bind(M .. " + SHIFT + A",      hl.dsp.exec_cmd("hyprshot -m window"))
-hl.bind(M .. " + CTRL + A",       hl.dsp.exec_cmd("hyprshot -m output"))
-hl.bind("Print",           hl.dsp.exec_cmd("hyprshot -m region"))
-hl.bind(M .. " + Print",   hl.dsp.exec_cmd("hyprshot -m window"))
-hl.bind(M .. " + SHIFT + Print", hl.dsp.exec_cmd("hyprshot -m output"))
+hl.bind(M .. " + A",             hl.dsp.exec_cmd("hyprshot --freeze --silent --clipboard-only -m region"))
+hl.bind(M .. " + SHIFT + A",      hl.dsp.exec_cmd("hyprshot --freeze --silent --clipboard-only -m window"))
+hl.bind(M .. " + CTRL + A",       hl.dsp.exec_cmd("hyprshot --freeze --silent --clipboard-only -m output"))
 
 -- Clipboard manager
 hl.bind(M .. " + V", hl.dsp.exec_cmd("cliphist list | wofi --dmenu | cliphist decode | wl-copy"))
 
 -- Lock screen
-hl.bind(M .. " + L",               hl.dsp.exec_cmd("swaylock"))
+hl.bind(M .. " + Escape",         hl.dsp.exec_cmd("swaylock"))
 
 -- Close window / Exit Hyprland
 hl.bind(M .. " + SHIFT + C", hl.dsp.window.close())
@@ -245,7 +245,6 @@ hl.bind(M .. " + F",     hl.dsp.window.fullscreen({ action = "toggle", mode = "f
 hl.bind(M .. " + CTRL + Space", hl.dsp.window.float({ action = "toggle" }))
 hl.bind(M .. " + SHIFT + P", hl.dsp.window.pseudo())
 hl.bind(M .. " + Tab",   hl.dsp.window.cycle_next())
-hl.bind(M .. " + N",     hl.dsp.window.set_prop({ prop = "minimized", value = "true" }))
 hl.bind(M .. " + M",     hl.dsp.window.fullscreen({ action = "toggle", mode = "maximized" }))
 hl.bind(M .. " + CTRL + N", hl.dsp.exec_cmd("hyprctl dispatch focusurgentorlast"))
 
@@ -285,8 +284,8 @@ hl.bind(M .. " + mouse_down", hl.dsp.focus({ workspace = "e+1" }))
 hl.bind(M .. " + mouse_up",   hl.dsp.focus({ workspace = "e-1" }))
 
 -- Special workspace (scratchpad)
-hl.bind(M .. " + S",         hl.dsp.workspace.toggle_special())
-hl.bind(M .. " + SHIFT + S", hl.dsp.window.move({ workspace = "special" }))
+hl.bind(M .. " + S",         hl.dsp.workspace.toggle_special("scratch"))
+hl.bind(M .. " + SHIFT + S", hl.dsp.window.move({ workspace = "special:scratch" }))
 
 -- Volume
 hl.bind("XF86AudioRaiseVolume", hl.dsp.exec_cmd("wpctl set-volume @DEFAULT_AUDIO_SINK@ 5%+"),  { locked = true, repeating = true })
@@ -308,10 +307,10 @@ hl.bind(M .. " + P", hl.dsp.exec_cmd("wdisplays"))
 -- ---- Resize Submap ----------------------------------------------------------
 
 hl.define_submap("resize", function()
-    hl.bind("left",   hl.dsp.window.resize({ x = -10, y = 0 }))
-    hl.bind("right",  hl.dsp.window.resize({ x = 10,  y = 0 }))
-    hl.bind("up",     hl.dsp.window.resize({ x = 0,   y = -10 }))
-    hl.bind("down",   hl.dsp.window.resize({ x = 0,   y = 10 }))
+    hl.bind("left",   hl.dsp.window.resize({ x = -10, y = 0,   relative = true }))
+    hl.bind("right",  hl.dsp.window.resize({ x = 10,  y = 0,   relative = true }))
+    hl.bind("up",     hl.dsp.window.resize({ x = 0,   y = -10, relative = true }))
+    hl.bind("down",   hl.dsp.window.resize({ x = 0,   y = 10,  relative = true }))
     hl.bind("escape", hl.dsp.submap("reset"))
     hl.bind("Return", hl.dsp.submap("reset"))
 end)

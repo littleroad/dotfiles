@@ -51,6 +51,12 @@ window#waybar {
     margin: 0;
 }
 
+/* Reserve fixed width so the value changing doesn't shift icons */
+#cpu,
+#memory {
+    min-width: 4.5em;
+}
+
 #battery {
     color: #a3be8c;
 }
