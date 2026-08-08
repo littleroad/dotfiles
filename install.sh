@@ -99,6 +99,8 @@ DEPS=(
     "fd"
     "zoxide"
     "neovim"
+    "nvim-packer-git"  # AUR: packer.nvim plugin manager (nvim)
+    "tree-sitter-cli"  # treesitter parser compiler (nvim treesitter)
     "tmux"
     "fzf"
     "hyprland"
@@ -131,6 +133,27 @@ case "$PKG_MANAGER" in
                 *) echo "$1" ;;
             esac
         }
+        pkg_available() {
+            case "$1" in
+                # AUR package: no binary, check via pacman -Q
+                nvim-packer-git) pacman -Q nvim-packer-git &>/dev/null ;;
+                *) command -v "$(pkg_command_name "$1")" &>/dev/null ;;
+            esac
+        }
+        pkg_install() {
+            case "$1" in
+                # AUR package: install via yay (pacman has no AUR)
+                nvim-packer-git)
+                    if command -v yay &>/dev/null; then
+                        yay -S --noconfirm nvim-packer-git
+                    else
+                        warn "yay not found; install nvim-packer-git from AUR manually"
+                        return 1
+                    fi
+                    ;;
+                *) "${PKG_INSTALL[@]}" "$(pkg_package_name "$1")" 2>/dev/null ;;
+            esac
+        }
         ;;
     apt)
         PKG_INSTALL=(sudo apt install -y)
@@ -138,6 +161,7 @@ case "$PKG_MANAGER" in
             case "$1" in
                 fd) echo fd-find ;;
                 nerd-font) echo "" ;;
+                nvim-packer-git) echo "" ;;  # AUR only
                 *) echo "$1" ;;
             esac
         }
@@ -148,16 +172,23 @@ case "$PKG_MANAGER" in
                 *) echo "$1" ;;
             esac
         }
+        pkg_available() {
+            case "$1" in
+                nvim-packer-git) return 1 ;;  # not available via apt
+                *) command -v "$(pkg_command_name "$1")" &>/dev/null ;;
+            esac
+        }
+        pkg_install() {
+            local pkg_name
+            pkg_name="$(pkg_package_name "$1")"
+            if [[ -z "$pkg_name" ]]; then
+                warn "No $PKG_MANAGER package for $1; install manually"
+                return 1
+            fi
+            "${PKG_INSTALL[@]}" "$pkg_name" 2>/dev/null
+        }
         ;;
 esac
-
-pkg_available() {
-    command -v "$(pkg_command_name "$1")" &>/dev/null
-}
-
-pkg_install() {
-    "${PKG_INSTALL[@]}" "$(pkg_package_name "$1")" 2>/dev/null
-}
 
 pkg_font_pkg() {
     pkg_package_name nerd-font
@@ -228,11 +259,17 @@ install_deps() {
         if pkg_available "$pkg"; then
             ok "$pkg (installed)"
         else
+            local pkg_name
+            pkg_name="$(pkg_package_name "$pkg")"
+            if [[ -z "$pkg_name" ]]; then
+                warn "$pkg (no $PKG_MANAGER package; install manually)"
+                continue
+            fi
             if [[ "$MODE" == "apply" ]]; then
-                install "$(pkg_package_name "$pkg")"
+                install "$pkg_name"
                 pkg_install "$pkg" || warn "Failed to install $pkg"
             else
-                install "$(pkg_package_name "$pkg") (would install)"
+                install "$pkg_name (would install)"
             fi
         fi
     done

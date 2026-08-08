@@ -59,6 +59,7 @@ Core tools used by these configs:
 - [fd](https://github.com/sharkdp/fd) — `find` replacement
 - [zoxide](https://github.com/ajeetdsouza/zoxide) — smart `cd`
 - [neovim](https://neovim.io/) — editor
+- [nvim-packer-git](https://github.com/wbthomason/packer.nvim) — packer.nvim plugin manager (AUR, for nvim)
 - [tmux](https://github.com/tmux/tmux) — terminal multiplexer
 - [fzf](https://github.com/junegunn/fzf) — fuzzy finder
 - [tree-sitter-cli](https://github.com/tree-sitter/tree-sitter) — treesitter parser compiler (for nvim treesitter)
